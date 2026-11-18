@@ -1,0 +1,376 @@
+{
+  "topic": "B7",
+  "claim_delay_business_rule": {
+    "relation": "delay_days_2_vs_3",
+    "quotes": {
+      "a": {
+        "delay_days": 2,
+        "amount_vnd": 0,
+        "reason": "no_entitlement"
+      },
+      "b": {
+        "delay_days": 3,
+        "amount_vnd": 35000,
+        "reason": "entitled"
+      }
+    },
+    "holds": true
+  },
+  "graders": {
+    "grader_a": {
+      "infrastructure_errors_excluded": {
+        "holds": true,
+        "pass_rate_before": 0.75,
+        "pass_rate_after": 0.75,
+        "pass_rate_delta": 0.0,
+        "graded_trials_before": 12,
+        "graded_trials_after": 12
+      },
+      "duplicate_input_scales_totals_only": {
+        "holds": false,
+        "ratio_checks": {
+          "pass_rate": true,
+          "pass_5": false,
+          "seed_pass_rates": true,
+          "seed_variance": true,
+          "seed_min": true,
+          "seed_max": true,
+          "cost_per_success_vnd": false,
+          "mean_steps": true,
+          "p95_steps": true,
+          "mean_model_calls": true,
+          "mean_tool_calls": true
+        },
+        "total_checks": {
+          "trials": true,
+          "graded_trials": true,
+          "successes": true,
+          "total_simulated_cost_vnd": false
+        },
+        "ratio_values": {
+          "pass_rate": {
+            "before": 0.75,
+            "after": 0.75
+          },
+          "pass_5": {
+            "before": 0.6666666666666666,
+            "after": 0.0
+          },
+          "seed_pass_rates": {
+            "before": {
+              "11": 0.8333333333333334,
+              "22": 0.6666666666666666
+            },
+            "after": {
+              "11": 0.8333333333333334,
+              "22": 0.6666666666666666
+            }
+          },
+          "seed_variance": {
+            "before": 0.006944444444444451,
+            "after": 0.006944444444444451
+          },
+          "seed_min": {
+            "before": 0.6666666666666666,
+            "after": 0.6666666666666666
+          },
+          "seed_max": {
+            "before": 0.8333333333333334,
+            "after": 0.8333333333333334
+          },
+          "cost_per_success_vnd": {
+            "before": 31.5,
+            "after": 26.27777777777778
+          },
+          "mean_steps": {
+            "before": 4.25,
+            "after": 4.25
+          },
+          "p95_steps": {
+            "before": 5.0,
+            "after": 5.0
+          },
+          "mean_model_calls": {
+            "before": 2.0,
+            "after": 2.0
+          },
+          "mean_tool_calls": {
+            "before": 5.0,
+            "after": 5.0
+          }
+        },
+        "total_values": {
+          "trials": {
+            "before": 12,
+            "after": 24,
+            "expected_after": 24
+          },
+          "graded_trials": {
+            "before": 12,
+            "after": 24,
+            "expected_after": 24
+          },
+          "successes": {
+            "before": 9,
+            "after": 18,
+            "expected_after": 18
+          },
+          "total_simulated_cost_vnd": {
+            "before": 283.5,
+            "after": 473.0,
+            "expected_after": 567.0
+          }
+        }
+      },
+      "unrelated_shape_isolation": {
+        "holds": true,
+        "changed_fields": [],
+        "workflow_pass_rate_before": 0.75,
+        "workflow_pass_rate_after": 0.75
+      }
+    },
+    "grader_b": {
+      "infrastructure_errors_excluded": {
+        "holds": true,
+        "pass_rate_before": 0.75,
+        "pass_rate_after": 0.75,
+        "pass_rate_delta": 0.0,
+        "graded_trials_before": 12,
+        "graded_trials_after": 12
+      },
+      "duplicate_input_scales_totals_only": {
+        "holds": false,
+        "ratio_checks": {
+          "pass_rate": true,
+          "pass_5": false,
+          "seed_pass_rates": true,
+          "seed_variance": true,
+          "seed_min": true,
+          "seed_max": true,
+          "cost_per_success_vnd": true,
+          "mean_steps": true,
+          "p95_steps": true,
+          "mean_model_calls": true,
+          "mean_tool_calls": true
+        },
+        "total_checks": {
+          "trials": true,
+          "graded_trials": true,
+          "successes": true,
+          "total_simulated_cost_vnd": true
+        },
+        "ratio_values": {
+          "pass_rate": {
+            "before": 0.75,
+            "after": 0.75
+          },
+          "pass_5": {
+            "before": 0.6666666666666666,
+            "after": 0.0
+          },
+          "seed_pass_rates": {
+            "before": {
+              "11": 0.8333333333333334,
+              "22": 0.6666666666666666
+            },
+            "after": {
+              "11": 0.8333333333333334,
+              "22": 0.6666666666666666
+            }
+          },
+          "seed_variance": {
+            "before": 0.006944444444444451,
+            "after": 0.006944444444444451
+          },
+          "seed_min": {
+            "before": 0.6666666666666666,
+            "after": 0.6666666666666666
+          },
+          "seed_max": {
+            "before": 0.8333333333333334,
+            "after": 0.8333333333333334
+          },
+          "cost_per_success_vnd": {
+            "before": 21.055555555555557,
+            "after": 21.055555555555557
+          },
+          "mean_steps": {
+            "before": 4.25,
+            "after": 4.25
+          },
+          "p95_steps": {
+            "before": 5.0,
+            "after": 5.0
+          },
+          "mean_model_calls": {
+            "before": 2.0,
+            "after": 2.0
+          },
+          "mean_tool_calls": {
+            "before": 5.0,
+            "after": 5.0
+          }
+        },
+        "total_values": {
+          "trials": {
+            "before": 12,
+            "after": 24,
+            "expected_after": 24
+          },
+          "graded_trials": {
+            "before": 12,
+            "after": 24,
+            "expected_after": 24
+          },
+          "successes": {
+            "before": 9,
+            "after": 18,
+            "expected_after": 18
+          },
+          "total_simulated_cost_vnd": {
+            "before": 189.5,
+            "after": 379.0,
+            "expected_after": 379.0
+          }
+        }
+      },
+      "unrelated_shape_isolation": {
+        "holds": true,
+        "changed_fields": [],
+        "workflow_pass_rate_before": 0.75,
+        "workflow_pass_rate_after": 0.75
+      }
+    },
+    "grader_c": {
+      "infrastructure_errors_excluded": {
+        "holds": false,
+        "pass_rate_before": 0.75,
+        "pass_rate_after": 0.5625,
+        "pass_rate_delta": -0.1875,
+        "graded_trials_before": 12,
+        "graded_trials_after": 16
+      },
+      "duplicate_input_scales_totals_only": {
+        "holds": false,
+        "ratio_checks": {
+          "pass_rate": true,
+          "pass_5": false,
+          "seed_pass_rates": true,
+          "seed_variance": true,
+          "seed_min": true,
+          "seed_max": true,
+          "cost_per_success_vnd": true,
+          "mean_steps": true,
+          "p95_steps": true,
+          "mean_model_calls": true,
+          "mean_tool_calls": true
+        },
+        "total_checks": {
+          "trials": true,
+          "graded_trials": true,
+          "successes": true,
+          "total_simulated_cost_vnd": true
+        },
+        "ratio_values": {
+          "pass_rate": {
+            "before": 0.75,
+            "after": 0.75
+          },
+          "pass_5": {
+            "before": 0.6666666666666666,
+            "after": 0.0
+          },
+          "seed_pass_rates": {
+            "before": {
+              "11": 0.8333333333333334,
+              "22": 0.6666666666666666
+            },
+            "after": {
+              "11": 0.8333333333333334,
+              "22": 0.6666666666666666
+            }
+          },
+          "seed_variance": {
+            "before": 0.006944444444444451,
+            "after": 0.006944444444444451
+          },
+          "seed_min": {
+            "before": 0.6666666666666666,
+            "after": 0.6666666666666666
+          },
+          "seed_max": {
+            "before": 0.8333333333333334,
+            "after": 0.8333333333333334
+          },
+          "cost_per_success_vnd": {
+            "before": 21.055555555555557,
+            "after": 21.055555555555557
+          },
+          "mean_steps": {
+            "before": 4.25,
+            "after": 4.25
+          },
+          "p95_steps": {
+            "before": 5.0,
+            "after": 5.0
+          },
+          "mean_model_calls": {
+            "before": 2.0,
+            "after": 2.0
+          },
+          "mean_tool_calls": {
+            "before": 5.0,
+            "after": 5.0
+          }
+        },
+        "total_values": {
+          "trials": {
+            "before": 12,
+            "after": 24,
+            "expected_after": 24
+          },
+          "graded_trials": {
+            "before": 12,
+            "after": 24,
+            "expected_after": 24
+          },
+          "successes": {
+            "before": 9,
+            "after": 18,
+            "expected_after": 18
+          },
+          "total_simulated_cost_vnd": {
+            "before": 189.5,
+            "after": 379.0,
+            "expected_after": 379.0
+          }
+        }
+      },
+      "unrelated_shape_isolation": {
+        "holds": true,
+        "changed_fields": [],
+        "workflow_pass_rate_before": 0.75,
+        "workflow_pass_rate_after": 0.75
+      }
+    }
+  },
+  "interpretation": {
+    "infrastructure_errors_scored_as_failures": [
+      "grader_c"
+    ],
+    "duplicate_input_breaks_invariants": [
+      "grader_a",
+      "grader_b",
+      "grader_c"
+    ],
+    "duplicate_input_changes_pass_5": [
+      "grader_a",
+      "grader_b",
+      "grader_c"
+    ],
+    "duplicate_input_changes_cost_accounting": [
+      "grader_a"
+    ],
+    "cross_shape_contamination": []
+  }
+}

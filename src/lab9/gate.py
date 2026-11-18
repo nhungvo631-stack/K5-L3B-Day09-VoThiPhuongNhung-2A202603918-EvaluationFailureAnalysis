@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 from lab8.console import utf8_stdio
@@ -33,8 +34,73 @@ def integrity_check(pr: dict, base: dict, spec: dict, base_spec: dict | None = N
         including dropping no_significant_drop)
       - an item's slice tags in PR rows differ from the baseline's (relabelling an item out of a
         slice hides its regression from the slice gate)"""
-    # TODO M7
-    return []
+    problems: list[str] = []
+    for mid, value in (pr.get("metrics") or {}).items():
+        if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+            problems.append(f"metric {mid} is NaN or infinity")
+    manifest = pr.get("manifest") or {}
+    base_manifest = base.get("manifest") or {}
+    expected_rows = manifest.get("items", 0) * len(manifest.get("seeds", []))
+    if len(pr.get("rows") or []) != expected_rows:
+        problems.append(
+            f"dropped or duplicated rows: got {len(pr.get('rows') or [])}, "
+            f"expected {expected_rows}"
+        )
+    pr_pairs = {(r.get("item_id"), r.get("seed")) for r in pr.get("rows") or []}
+    base_pairs = {(r.get("item_id"), r.get("seed")) for r in base.get("rows") or []}
+    if pr_pairs != base_pairs:
+        problems.append("PR (item_id, seed) set differs from baseline")
+    if pr.get("evaluator_failures"):
+        problems.append("evaluator_failures is non-empty")
+    for r in pr.get("rows") or []:
+        for m in spec.get("metrics") or []:
+            mid = m["id"]
+            if mid in r and r[mid] is None:
+                problems.append(f"row {r.get('item_id')}@{r.get('seed')} has None for {mid}")
+
+    if base_spec is not None:
+        pr_ver = spec.get("eval_set_version")
+        base_ver = base_spec.get("eval_set_version")
+        if pr_ver == base_ver:
+            base_metrics = {m["id"]: m for m in base_spec.get("metrics") or []}
+            pr_metrics = {m["id"]: m for m in spec.get("metrics") or []}
+            for mid, bm in base_metrics.items():
+                pm = pr_metrics.get(mid)
+                if pm is None:
+                    problems.append(f"loosened spec: metric {mid} removed")
+                    continue
+                bth = bm.get("threshold") or {}
+                pth = pm.get("threshold") or {}
+                if "max" in bth and pth.get("max", float("-inf")) > bth["max"]:
+                    problems.append(f"loosened spec: max threshold for {mid} increased")
+                if "min" in bth and pth.get("min", float("inf")) < bth["min"]:
+                    problems.append(f"loosened spec: min threshold for {mid} decreased")
+                if bm.get("blocking") and not pm.get("blocking"):
+                    problems.append(f"loosened spec: {mid} is no longer blocking")
+                if bth.get("no_significant_drop") and not pth.get("no_significant_drop"):
+                    problems.append(f"loosened spec: {mid} dropped no_significant_drop")
+            b_slices = {s["name"]: s for s in base_spec.get("slices") or []}
+            p_slices = {s["name"]: s for s in spec.get("slices") or []}
+            if set(p_slices) != set(b_slices):
+                problems.append("loosened spec: slice set changed")
+            for name, bs in b_slices.items():
+                ps = p_slices.get(name)
+                if ps is None:
+                    continue
+                if ps.get("min", float("inf")) < bs.get("min", float("inf")):
+                    problems.append(f"loosened spec: slice {name} minimum decreased")
+                if bs.get("blocking") and not ps.get("blocking"):
+                    problems.append(f"loosened spec: slice {name} no longer blocking")
+                if bs.get("no_significant_drop") and not ps.get("no_significant_drop"):
+                    problems.append(f"loosened spec: slice {name} dropped no_significant_drop")
+
+    def slice_tags(report: dict) -> dict[str, set[str]]:
+        return {r["item_id"]: set(r.get("slices") or []) for r in report.get("rows") or []}
+    pr_tags = slice_tags(pr)
+    base_tags = slice_tags(base)
+    if pr_tags != base_tags:
+        problems.append("item slice tags differ from baseline")
+    return problems
 
 
 def slice_check(pr: dict, base: dict, spec: dict) -> tuple[list[str], list[str]]:
@@ -44,8 +110,39 @@ def slice_check(pr: dict, base: dict, spec: dict) -> tuple[list[str], list[str]]
       - fail if below "min", or if no_significant_drop and the paired CI over the slice's items
         lies entirely below 0
     Return (blocked ids like "slice:money_movement/pass_rate", report lines)."""
-    # TODO M5
-    return [], []
+    blocked: list[str] = []
+    lines: list[str] = []
+    bs = spec.get("bootstrap") or {}
+    for s in spec.get("slices") or []:
+        name = s["name"]
+        mid = s["metric"]
+        pa = per_item(pr, mid, slice_name=name)
+        value = sum(pa.values()) / len(pa) if pa else None
+        verdict = "ok"
+        note = ""
+        if value is None:
+            verdict = "MISSING"
+        elif "min" in s and value < s["min"]:
+            verdict = "fail"
+        if s.get("no_significant_drop") and pa:
+            ba = per_item(base, mid, slice_name=name)
+            keys = sorted(set(pa) & set(ba))
+            if keys:
+                d, lo, hi = stats.paired_bootstrap(
+                    [pa[k] for k in keys], [ba[k] for k in keys],
+                    n_resamples=bs.get("n_resamples", 1000), rng=bs.get("rng", 2027),
+                )
+                note = f"Δ {d:+.3f} CI [{lo:+.3f}, {hi:+.3f}]"
+                if hi < 0:
+                    verdict = "fail"
+        bid = f"slice:{name}/{mid}"
+        if verdict != "ok" and s.get("blocking"):
+            blocked.append(bid)
+        label = "BLOCK" if verdict == "fail" and s.get("blocking") else verdict.upper()
+        lines.append(
+            f"  {bid:<28} {value!s:<8} min={s.get('min', '-')!s:<10} {note:<28} {label}"
+        )
+    return blocked, lines
 
 
 def check(pr: dict, base: dict, spec: dict, base_spec: dict | None = None) -> tuple[list[str], list[str]]:

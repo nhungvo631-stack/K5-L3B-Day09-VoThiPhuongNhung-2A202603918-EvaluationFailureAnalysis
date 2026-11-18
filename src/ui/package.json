@@ -1,0 +1,8 @@
+{
+  "name": "chocomint-lab-ui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test report.test.mjs integration.test.mjs"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "run_id": "B7-grader-audit-v1",
+  "fixtures": [
+    "metamorphic_claim_delay.json",
+    "metamorphic_duplicate.json",
+    "metamorphic_infra.json"
+  ],
+  "variants": [
+    "grader_a",
+    "grader_b",
+    "grader_c"
+  ],
+  "relations": [
+    "infra_errors_do_not_move_pass_rate",
+    "duplicated_list_keeps_rates_doubles_totals",
+    "shuffled_trials_give_same_report (new)"
+  ],
+  "table": {
+    "grader_a": {
+      "infra_errors_do_not_move_pass_rate": {
+        "holds": true,
+        "broken": []
+      },
+      "duplicated_list_keeps_rates_doubles_totals": {
+        "holds": false,
+        "broken": [
+          {
+            "shape": "workflow",
+            "key": "pass_5",
+            "a": 0.6666666666666666,
+            "b": 0.0,
+            "expected": 0.6666666666666666
+          },
+          {
+            "shape": "workflow",
+            "key": "cost_per_success_vnd",
+            "a": 31.5,
+            "b": 26.27777777777778,
+            "expected": 31.5
+          },
+          {
+            "shape": "workflow",
+            "key": "total_simulated_cost_vnd",
+            "a": 283.5,
+            "b": 473.0,
+            "expected": 567.0
+          }
+        ]
+      },
+      "shuffled_trials_give_same_report (new)": {
+        "holds": false,
+        "broken": [
+          {
+            "shape": "workflow",
+            "key": "cost_per_success_vnd",
+            "a": 31.5,
+            "b": 31.555555555555557,
+            "expected": 31.5
+          },
+          {
+            "shape": "workflow",
+            "key": "total_simulated_cost_vnd",
+            "a": 283.5,
+            "b": 284.0,
+            "expected": 283.5
+          }
+        ]
+      }
+    },
+    "grader_b": {
+      "infra_errors_do_not_move_pass_rate": {
+        "holds": true,
+        "broken": []
+      },
+      "duplicated_list_keeps_rates_doubles_totals": {
+        "holds": false,
+        "broken": [
+          {
+            "shape": "workflow",
+            "key": "pass_5",
+            "a": 0.6666666666666666,
+            "b": 0.0,
+            "expected": 0.6666666666666666
+          }
+        ]
+      },
+      "shuffled_trials_give_same_report (new)": {
+        "holds": true,
+        "broken": []
+      }
+    },
+    "grader_c": {
+      "infra_errors_do_not_move_pass_rate": {
+        "holds": false,
+        "broken": [
+          {
+            "shape": "workflow",
+            "key": "pass_rate",
+            "a": 0.75,
+            "b": 0.5625,
+            "expected": 0.75
+          }
+        ]
+      },
+      "duplicated_list_keeps_rates_doubles_totals": {
+        "holds": false,
+        "broken": [
+          {
+            "shape": "workflow",
+            "key": "pass_5",
+            "a": 0.6666666666666666,
+            "b": 0.0,
+            "expected": 0.6666666666666666
+          }
+        ]
+      },
+      "shuffled_trials_give_same_report (new)": {
+        "holds": true,
+        "broken": []
+      }
+    }
+  },
+  "business_rule": {
+    "delay_2_vs_3": {
+      "delay_days": {
+        "a": 2,
+        "b": 3
+      },
+      "amount_vnd": {
+        "a": 0,
+        "b": 35000
+      },
+      "expected_vnd": {
+        "a": 0,
+        "b": 35000
+      },
+      "holds": true
+    }
+  }
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#49352c">
+  <title>ChocoMint · Lab 08</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true">cm</span>ChocoMint</a>
+    <p class="sidebar-caption">From workflows to agents</p>
+    <nav aria-label="Báo cáo"><button class="nav-button active" data-view="benchmark" aria-current="page">Benchmark <span>↗</span></button><button class="nav-button" data-view="crash">Crash safety <span>↗</span></button></nav>
+    <div class="sidebar-bottom"><span class="dot"></span> Lab 08 <p>Workflow · Single agent<br>Orchestrator · Swarm</p></div>
+  </aside>
+  <main>
+    <header><span>Phòng thử nghiệm / Báo cáo</span><span class="team-tag">ChocoMint</span></header>
+    <div class="page-heading"><div><h1 id="page-title">Chọn kiến trúc cho doanh nghiệp</h1><p id="page-description">Đối chiếu chất lượng, độ ổn định và chi phí trên cùng bộ thử nghiệm.</p></div><div class="heading-actions"><button id="present" class="secondary" aria-pressed="false">Chế độ trình bày</button><button id="reload" class="primary">Nạp báo cáo mới</button></div></div>
+    <section class="source-panel" aria-label="Nguồn dữ liệu"><div><strong id="source-label">Đang tải báo cáo…</strong><p id="source-detail">Đọc từ thư mục reports.</p></div><label class="file-button">Chọn file JSON<input id="file" type="file" accept=".json,application/json"></label></section>
+    <p id="feedback" role="status" aria-live="polite"></p>
+    <section id="benchmark-view">
+      <section class="decision-panel" aria-labelledby="decision-title">
+        <div class="decision-copy"><span id="decision-tag" class="decision-tag">Đề xuất từ benchmark</span><h2 id="decision-title">Đang đối chiếu số liệu…</h2><p id="decision-reason"></p><p id="decision-scope" class="decision-scope"></p></div>
+        <div class="decision-settings"><label>Pass rate tối thiểu<select id="quality-threshold"><option value="1">100%</option><option value="0.99">99%</option><option value="0.95">95%</option></select></label><label>Đối chiếu chi phí với<select id="baseline"></select></label><div class="savings"><strong id="saving-rate">—</strong><span id="saving-detail">Chênh lệch chi phí / thành công</span></div></div>
+      </section>
+      <div id="experiment-context" class="experiment-context"></div>
+      <div class="chart-grid">
+        <section class="panel chart-panel"><div class="panel-heading"><h2>Chi phí cho một lần thành công</h2><span>VND mô phỏng · Thấp hơn tốt hơn</span></div><div id="cost-chart" class="chart-rows"></div><p class="table-note">Cùng thang đo, bắt đầu từ 0. Đã tính chi phí của những lần không đạt.</p></section>
+        <section class="panel chart-panel"><div class="panel-heading"><h2>Chất lượng và độ ổn định</h2><span>Cao hơn tốt hơn · Thang 0–100%</span></div><div class="chart-legend"><span><i class="legend-pass"></i>Pass rate</span><span><i class="legend-stable"></i>Pass⁵</span></div><div id="quality-chart" class="chart-rows"></div></section>
+      </div>
+      <div class="section-heading"><h2>Hiệu quả thực thi</h2><span>Chi phí mô phỏng · VND</span></div>
+      <div id="shape-cards" class="shape-grid"></div>
+      <section class="panel"><div class="panel-heading"><h2>Đặt cạnh nhau</h2><span>— = chưa có số liệu hoặc chưa chấm</span></div><div class="table-scroll"><table><caption class="sr-only">So sánh chỉ số theo shape</caption><thead><tr><th>Shape</th><th>Pass rate</th><th>Pass⁵</th><th>Variance</th><th>Chi phí / thành công</th><th>Bước TB</th><th>Model calls TB</th><th>Tool calls TB</th></tr></thead><tbody id="comparison"></tbody></table></div><p class="table-note">Pass⁵: claim đạt trên toàn bộ seed. Chi phí là mô phỏng, không phải hóa đơn API. Không có số đo latency.</p></section>
+      <section class="panel scenario-panel"><div class="panel-heading"><div><h2>Đối chiếu cùng tình huống</h2><p class="panel-description">Kết quả đã ghi trong benchmark, không phải chạy trực tiếp.</p></div><div class="filters"><label>Claim <select id="claim-select"></select></label><label>Seed <select id="seed-select"></select></label></div></div><div id="scenario-cards" class="scenario-grid"></div></section>
+      <details class="trial-details"><summary>Xem dữ liệu từng lần chạy</summary><section class="panel"><div class="panel-heading"><h2>Từng lần chạy</h2><div class="filters"><label>Shape <select id="shape-filter"><option value="all">Tất cả</option></select></label><label>Kết quả <select id="result-filter"><option value="all">Tất cả</option><option value="passed">Đạt</option><option value="failed">Không đạt</option><option value="ungraded">Chưa chấm</option></select></label></div></div><p id="trial-count" class="table-note"></p><div class="table-scroll"><table><caption class="sr-only">Các lần chạy benchmark đã lọc</caption><thead><tr><th>Claim / Run ID</th><th>Shape</th><th>Seed</th><th>Kết quả</th><th>Trạng thái</th><th>Lý do</th><th>Chi phí</th></tr></thead><tbody id="trials"></tbody></table></div><button id="more" class="load-more" hidden>Xem thêm 100 lần chạy</button></section></details>
+    </section>
+    <section id="crash-view" hidden><div class="crash-summary"><div><h2>Khôi phục sau gián đoạn</h2><p>Mỗi kịch bản kiểm tra refund và audit sau khi resume.</p></div><strong id="crash-score">—</strong></div><section class="panel"><div class="panel-heading"><h2>Các điểm gián đoạn</h2><span id="crash-count"></span></div><div class="table-scroll"><table><caption class="sr-only">Kết quả crash safety</caption><thead><tr><th>Kịch bản</th><th>Điểm gián đoạn</th><th>Kết quả</th><th>Lý do</th></tr></thead><tbody id="scenarios"></tbody></table></div></section></section>
+    <footer><span>ChocoMint / Lab 08</span><span id="metadata"></span></footer>
+  </main>
+</body>
+</html>
